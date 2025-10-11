@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.ArrayList;
+import javax.swing.JOptionPane; // <- para popups
 
 /**
  * La clase SilkRoad representa el juego principal de la Ruta de la Seda.
@@ -65,11 +66,12 @@ public class SilkRoad {
         this.stores = new TreeMap<>();
         this.robots = new ArrayList<>();
         this.solutionAbstraction = new HashMap<>();
-        this.spiralPath = new SpiralPath(20, 20, 20);
+        // Ajuste: espiral depende de la longitud (espesor proporcional)
+        int dynamicThickness = Math.max(10, Math.min(40, lenght));
+        this.spiralPath = new SpiralPath(20, 20, dynamicThickness);
         this.profitBar = new ProfitBar(300, 300, lenght * 100);
         this.lengh = lenght;
-        this.makeVisible();
-
+        this.makeVisible(); // (se mantiene como lo tenías)
     }
 
     /**
@@ -113,6 +115,7 @@ public class SilkRoad {
     public void placeStore(int location, int tenges) {
         if (this.stores.containsKey(location)) {
             this.lastActionSuccess = false;
+            showMessage("Ya existe una tienda en esta ubicación.");
             return;
         }
         Store store = new Store(location, tenges);
@@ -133,8 +136,12 @@ public class SilkRoad {
     public void removeStore(int location) {
         if (!this.stores.containsKey(location)) {
             this.lastActionSuccess = false;
+            showMessage("No hay tienda en esa ubicación.");
             return;
         }
+        // Ajuste: ocultar visualmente antes de eliminar
+        Store store = this.stores.get(location);
+        store.makeInvisible();
         this.stores.remove(location);
         this.lastActionSuccess = true;
     }
@@ -152,6 +159,7 @@ public class SilkRoad {
     public void placeRobot(int location, int tenges) {
         if (findRobotAtLocation(location) != null) {
             this.lastActionSuccess = false;
+            showMessage("Ya existe un robot en esa ubicación.");
             return;
         }
         Robot robot = new Robot(location);
@@ -172,8 +180,11 @@ public class SilkRoad {
         Robot robot = findRobotAtLocation(location);
         if (robot == null) {
             this.lastActionSuccess = false;
+            showMessage("No hay robot en esa ubicación.");
             return;
         }
+        // Ajuste: ocultar visualmente antes de eliminar
+        robot.makeInvisible();
         this.robots.remove(robot);
         this.lastActionSuccess = true;
 
@@ -215,11 +226,23 @@ public class SilkRoad {
         Robot robot = findRobotAtLocation(location);
         if (robot == null) {
             this.lastActionSuccess = false;
+            showMessage("No existe un robot en esa ubicación.");
             return;
         }
 
         int newPosition = location + meters;
-        robot.moveTo(newPosition);
+        robot.moveTo(newPosition); // Ajuste: mover figura también (aunque esté invisible)
+
+        // Ajuste: si hay tienda en la nueva posición, vaciarla y sumar al robot
+        Store store = this.stores.get(newPosition);
+        if (store != null && !store.isEmpty()) {
+            int taken = store.emptyStore();
+            // pickTenges en Robot asigna; sumamos al total actual
+            robot.pickTenges(robot.getProfit() + taken);
+            // Actualizar barra tras recoger
+            updateProFitBar(totalProfit(), profit());
+        }
+
         this.lastActionSuccess = true;
     }
 
@@ -262,6 +285,10 @@ public class SilkRoad {
         for (Robot robot : this.robots) {
             robot.goInitialPosition();
             robot.pickTenges(0);
+        }
+        // Ajuste: también reabastecer tiendas
+        for (Store store : this.stores.values()) {
+            store.resupply();
         }
         this.solutionAbstraction.clear();
         this.profitBar.reset();
@@ -362,7 +389,7 @@ public class SilkRoad {
      * Calcula la espiral con la longitud configurada y la hace visible
      * en el canvas. Si no hay spiralPath disponible, no hace nada.
      */
-    private void showSpiral() {
+    private  void showSpiral() {
         if (spiralPath != null) {
             spiralPath.calcSpiral(this.lengh);
             spiralPath.makeVisible();
@@ -457,6 +484,25 @@ public class SilkRoad {
         profitBar.makeInvisible();
 
         this.lastActionSuccess = true;
+        // Ajuste: terminar ejecución del programa
+        System.exit(0);
     }
 
+    // ======= Agregado: método requerido por el enunciado =======
+    /**
+     * Retorna la ganancia máxima posible del simulador según la longitud del camino.
+     * (Se mantiene profitBar() para el valor actual mostrado en la barra).
+     * @return máximo profit teórico (lengh * 100)
+     */
+    public int profit() {
+        return this.lengh * 100;
+    }
+
+    // ======= Utilidad: popups solo si el simulador está visible =======
+    private void showMessage(String message) {
+        // Mostrar popups SOLO si hay elementos visibles del simulador
+        if (this.profitBar != null && this.profitBar.isVisible()) {
+            JOptionPane.showMessageDialog(null, message);
+        }
+    }
 }

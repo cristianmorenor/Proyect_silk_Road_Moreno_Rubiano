@@ -44,6 +44,8 @@ public class SpiralPath {
         this.segments = new ArrayList<>();
         this.totalLength = 0;
     }
+    
+    
 
     public void makeVisible() {
         if (visible)
@@ -242,5 +244,44 @@ public class SpiralPath {
         return String.format("SpiralPath: %d segments, %d px total, thickness: %d, visible: %s",
                 segments.size(), totalLength, thickness, visible);
     }
+    
+        /**
+     * Retorna las coordenadas (x, y) aproximadas sobre el camino espiral
+     * para una posición dada (location).
+     * Este método permite posicionar visualmente robots y tiendas
+     * sobre la ruta dibujada por la espiral.
+     */
+    public int[] getPositionOnPath(int location) {
+        // Valores base para el inicio de la espiral
+        int startX = 20;
+        int startY = 20;
+        int step = 20; // mismo paso que uses para dibujar
+
+        int x = startX;
+        int y = startY;
+
+        // Simple generación de coordenadas en espiral (coincide con calcSpiral)
+        int dir = 0; // 0=right,1=down,2=left,3=up
+        int segmentLength = 1;
+        int segmentPassed = 0;
+        int segmentCount = 0;
+
+        for (int i = 0; i < location; i++) {
+            if (dir == 0) x += step;
+            else if (dir == 1) y += step;
+            else if (dir == 2) x -= step;
+            else y -= step;
+
+            segmentPassed++;
+            if (segmentPassed == segmentLength) {
+                segmentPassed = 0;
+                dir = (dir + 1) % 4;
+                segmentCount++;
+                if (segmentCount % 2 == 0) segmentLength++;
+            }
+        }
+        return new int[]{x, y};
+    }
+
 
 }

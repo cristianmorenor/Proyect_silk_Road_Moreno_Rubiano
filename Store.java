@@ -1,7 +1,4 @@
 public class Store {
-    private static final int TRI_START_X = 140;
-    private static final int TRI_START_Y = 15;
-
     private int location;
     private String color;
     private boolean isVisible;
@@ -9,9 +6,23 @@ public class Store {
     private int initialTenges;
     private int actualTenges;
     private final int initialLocation;
-
     private Triangle shape;
 
+    // Referencia estática al SpiralPath actual para posicionar visualmente las tiendas
+    private static SpiralPath spiralPathRef;
+
+    /**
+     * Permite conectar el Store con el SpiralPath activo en SilkRoad.
+     */
+    public static void setSpiralPath(SpiralPath path) {
+        spiralPathRef = path;
+    }
+
+    /**
+     * Constructor de la tienda (Store)
+     * @param location posición de la tienda en el camino
+     * @param initialTenges cantidad inicial de tenges
+     */
     public Store(int location, int initialTenges) {
         this.location = location;
         this.color = "yellow";
@@ -25,20 +36,35 @@ public class Store {
         this.shape.changeSize(40, 30);
         this.shape.changeColor(this.isEmpty ? "gray" : this.color);
 
-        int targetX = location * 30;
-        int targetY = 200;
-        this.shape.moveHorizontal(targetX - TRI_START_X);
-        this.shape.moveVertical(targetY - TRI_START_Y);
+        // 🔹 Nueva lógica visual: colocar la tienda sobre el camino espiral
+        int targetX = 140;
+        int targetY = 150;
+
+        if (spiralPathRef != null) {
+            int[] pos = spiralPathRef.getPositionOnPath(location);
+            targetX = pos[0];
+            targetY = pos[1];
+        }
+
+        // Mover la figura a la posición calculada
+        this.shape.moveHorizontal(targetX - 140);
+        this.shape.moveVertical(targetY - 15);
     }
 
+    /**
+     * Reabastece la tienda a su cantidad inicial de tenges.
+     */
     public void resupply() {
         this.actualTenges = this.initialTenges;
         this.isEmpty = (this.actualTenges == 0);
         if (isVisible) {
-            shape.changeColor(isEmpty ? "gray" : "yellow");
+            shape.changeColor(isEmpty ? "gray" : this.color);
         }
     }
 
+    /**
+     * Vacía la tienda y retorna los tenges recolectados.
+     */
     public int emptyStore() {
         int temp = this.actualTenges;
         this.actualTenges = 0;
@@ -49,6 +75,9 @@ public class Store {
         return temp;
     }
 
+    /**
+     * Hace visible la tienda.
+     */
     public void makeVisible() {
         if (!isVisible) {
             isVisible = true;
@@ -56,29 +85,9 @@ public class Store {
         }
     }
 
-    public int set(int location, int initialTenges) {
-        this.location = location;
-        this.initialTenges = Math.max(0, initialTenges);
-        this.actualTenges = this.initialTenges;
-        this.isEmpty = (this.actualTenges == 0);
-
-        // Re-crear siempre el shape desde cero
-        this.shape = new Triangle();
-        this.shape.changeSize(40, 30);
-        this.shape.changeColor(this.isEmpty ? "gray" : "yellow");
-
-        int targetX = location * 30;
-        int targetY = 200;
-        this.shape.moveHorizontal(targetX - TRI_START_X);
-        this.shape.moveVertical(targetY - TRI_START_Y);
-
-        if (isVisible) {
-            shape.makeVisible();
-        }
-
-        return this.actualTenges;
-    }
-
+    /**
+     * Oculta la tienda.
+     */
     public void makeInvisible() {
         if (isVisible) {
             isVisible = false;
@@ -86,14 +95,23 @@ public class Store {
         }
     }
 
+    /**
+     * Indica si la tienda está vacía.
+     */
     public boolean isEmpty() {
         return this.actualTenges == 0;
     }
 
+    /**
+     * Devuelve la ubicación de la tienda.
+     */
     public int getLocation() {
         return location;
     }
 
+    /**
+     * Devuelve la cantidad de tenges actual.
+     */
     public int getTenges() {
         return actualTenges;
     }

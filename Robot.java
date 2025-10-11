@@ -1,123 +1,70 @@
+import java.util.Random;
+
 /**
- * La clase Robot representa al jugador robot en el juego Silk Road.
+ * Representa un robot que puede moverse a lo largo del camino de SilkRoad
+ * y recolectar tenges desde las tiendas.
  * 
- * El robot puede moverse por diferentes posiciones del mapa, recolectar tenges
- * (moneda del juego) de las tiendas, y cambiar su estado de visibilidad.
- * El robot mantiene una posición inicial fija a la cual puede regresar,
- * así como una posición actual que cambia durante el juego.
+ * Cada robot tiene una ubicación, una posición inicial, y un contador de ganancias.
+ * También cuenta con una representación visual (círculo) que se dibuja en el canvas.
  * 
- * El robot se representa visualmente con color rojo y puede ser visible
- * o invisible según las mecánicas del juego.
- * 
- * @author MorenoRubiano
- * @version 2.0
+ * @author 
+ * @version 1.0
  */
 public class Robot {
-
-    /** Cantidad actual de tenges que ha recolectado el robot */
-    private int actualTenges;
-
-    /** Color del robot (por defecto "black") */
-    private String color;
-
-    /** Estado de visibilidad del robot en el canvas */
+    private int position;
+    private int profit;
+    private int initialPosition;
+    private Circle shape;
     private boolean isVisible;
 
-    /** Ubicación inicial del robot (inmutable) */
-    private final int initialLocation;
+    // Coordenadas actuales del dibujo (para mover visualmente)
+    private int currentX;
+    private int currentY;
 
-    /** Posición actual del robot en el mapa */
-    private int position;
-
-    private Circle shape;
+    // Referencia estática al SpiralPath para posicionar el robot en el camino
+    private static SpiralPath spiralPathRef;
 
     /**
-     * Constructor de la clase Robot.
-     * 
-     * Crea un nuevo robot en una ubicación inicial específica.
-     * El robot se inicializa con color rojo, sin tenges, y en estado invisible.
-     * 
-     * @param location La ubicación inicial donde se posicionará el robot
+     * Conecta la clase Robot con el SpiralPath activo en SilkRoad.
      */
-    public Robot(int location) {
-        this.initialLocation = location;
-        this.position = location;
-        this.color = "black";
-        this.actualTenges = 0;
+    public static void setSpiralPath(SpiralPath path) {
+        spiralPathRef = path;
+    }
+
+    /**
+     * Crea un nuevo robot en una ubicación específica.
+     * 
+     * @param position ubicación inicial del robot.
+     */
+    public Robot(int position) {
+        this.position = position;
+        this.initialPosition = position;
+        this.profit = 0;
         this.isVisible = false;
+
         this.shape = new Circle();
         this.shape.changeSize(20);
-        this.shape.changeColor(color);
-        this.shape.makeVisible();
-        this.shape.moveHorizontal(150);
-        this.shape.moveVertical(150);
-    }
+        this.shape.changeColor("black");
 
-    /**
-     * Hace invisible al robot en el canvas del juego.
-     * 
-     * Cambia el estado de visibilidad del robot a falso,
-     * ocultándolo de la interfaz gráfica.
-     */
-    public void makeInvisible() {
-        if (isVisible) {
-            isVisible = false;
-            shape.makeInvisible();
+        //Nueva lógica: ubicar el robot sobre el camino espiral
+        int targetX = 140;
+        int targetY = 150;
+
+        if (spiralPathRef != null) {
+            int[] pos = spiralPathRef.getPositionOnPath(position);
+            targetX = pos[0];
+            targetY = pos[1];
         }
+
+        // Mover la figura a la posición visual calculada
+        this.shape.moveHorizontal(targetX - 140);
+        this.shape.moveVertical(targetY - 15);
+        this.currentX = targetX;
+        this.currentY = targetY;
     }
 
     /**
-     * Obtiene la cantidad de tenges (ganancias) que ha recolectado el robot.
-     * 
-     * @return La cantidad actual de tenges que posee el robot
-     */
-    public int getProfit() {
-        return actualTenges;
-    }
-
-    /**
-     * Mueve el robot a su posición inicial.
-     * 
-     * Restablece la posición actual del robot a la ubicación inicial
-     * que fue establecida durante la construcción del objeto.
-     */
-    public void goInitialPosition() {
-        this.position = this.initialLocation;
-        if (isVisible) {
-            shape.makeInvisible();
-            shape.moveHorizontal(initialLocation * 30);
-            shape.makeVisible();
-        }
-    }
-
-    /**
-     * Obtiene la posición actual del robot en el mapa.
-     * 
-     * @return La posición actual donde se encuentra el robot
-     */
-    public int getPosition() {
-        return this.position;
-    }
-
-    /**
-     * Mueve el robot a una nueva posición específica.
-     * 
-     * @param newPosition La nueva posición donde se moverá el robot
-     */
-    public void moveTo(int newPosition) {
-        this.position = newPosition;
-        if (isVisible) {
-            shape.makeInvisible();
-            shape.moveHorizontal(newPosition * 30);
-            shape.makeVisible();
-        }
-    }
-
-    /**
-     * Hace visible al robot en el canvas del juego.
-     * 
-     * Cambia el estado de visibilidad del robot a verdadero,
-     * permitiendo que sea mostrado en la interfaz gráfica.
+     * Hace visible el robot.
      */
     public void makeVisible() {
         if (!isVisible) {
@@ -127,65 +74,74 @@ public class Robot {
     }
 
     /**
-     * Verifica si el robot está en una ubicación específica.
-     * 
-     * Compara la ubicación actual del robot con la ubicación proporcionada
-     * para determinar si coinciden.
-     * 
-     * @param location La ubicación a verificar
-     * @return true si el robot está en la ubicación especificada, false en caso
-     *         contrario
+     * Hace invisible el robot.
      */
-    public boolean isAtLocation(int location) {
-        return this.position == location;
-    }
-
-    /**
-     * Permite al robot recolectar una cantidad específica de tenges.
-     * 
-     * Establece la cantidad actual de tenges del robot al valor proporcionado.
-     * Este método simula la acción de recoger tenges de una tienda o ubicación.
-     * 
-     * @param actualTenges La cantidad de tenges que el robot recolectará
-     */
-    public void pickTenges(int actualTenges) {
-        this.actualTenges = actualTenges;
-    }
-
-    /**
-     * Verifica si el robot está visible en el canvas.
-     * 
-     * @return true si el robot es visible, false si está oculto
-     */
-    public boolean isVisible() {
-        return isVisible;
-    }
-
-    /**
-     * Establece el estado de visibilidad del robot.
-     * 
-     * Permite cambiar manualmente el estado de visibilidad del robot
-     * sin usar los métodos makeVisible() o makeInvisible().
-     * 
-     * @param visible true para hacer visible al robot, false para ocultarlo
-     */
-    public void setVisible(boolean visible) {
-        this.isVisible = visible;
-        if (visible)
-            shape.makeVisible();
-        else
+    public void makeInvisible() {
+        if (isVisible) {
+            isVisible = false;
             shape.makeInvisible();
+        }
     }
 
     /**
-     * Obtiene la ubicación inicial del robot.
-     * 
-     * Devuelve la ubicación inicial inmutable que fue establecida
-     * durante la construcción del robot.
-     * 
-     * @return La ubicación inicial del robot
+     * Devuelve la posición actual del robot.
      */
-    public int getInitialLocation() {
-        return initialLocation;
+    public int getPosition() {
+        return position;
+    }
+
+    /**
+     * Devuelve las ganancias actuales del robot.
+     */
+    public int getProfit() {
+        return profit;
+    }
+
+    /**
+     * Mueve el robot a una nueva ubicación.
+     * @param newPosition nueva posición del robot
+     */
+    public void moveTo(int newPosition) {
+        this.position = newPosition;
+
+        // Actualizar posición visual según el camino espiral
+        if (spiralPathRef != null) {
+            int[] pos = spiralPathRef.getPositionOnPath(newPosition);
+            updateVisualPosition(pos[0], pos[1]);
+        }
+    }
+
+    /**
+     * Recolecta una cantidad de tenges y la suma a las ganancias del robot.
+     */
+    public void pickTenges(int tenges) {
+        this.profit += tenges;
+    }
+
+    /**
+     * Regresa el robot a su posición inicial.
+     */
+    public void goInitialPosition() {
+        this.position = initialPosition;
+
+        if (spiralPathRef != null) {
+            int[] pos = spiralPathRef.getPositionOnPath(initialPosition);
+            updateVisualPosition(pos[0], pos[1]);
+        }
+    }
+
+    /**
+     * Actualiza visualmente la posición del robot en el canvas.
+     * 
+     * @param x coordenada X destino
+     * @param y coordenada Y destino
+     */
+    public void updateVisualPosition(int x, int y) {
+        int deltaX = x - this.currentX;
+        int deltaY = y - this.currentY;
+        this.shape.moveHorizontal(deltaX);
+        this.shape.moveVertical(deltaY);
+        this.currentX = x;
+        this.currentY = y;
     }
 }
