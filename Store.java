@@ -8,7 +8,8 @@ public class Store {
     private final int initialLocation;
     private Triangle shape;
 
-    // Referencia estática al SpiralPath actual para posicionar visualmente las tiendas
+    // Referencia estática al SpiralPath actual para posicionar visualmente las
+    // tiendas
     private static SpiralPath spiralPathRef;
 
     /**
@@ -20,7 +21,8 @@ public class Store {
 
     /**
      * Constructor de la tienda (Store)
-     * @param location posición de la tienda en el camino
+     * 
+     * @param location      posición de la tienda en el camino
      * @param initialTenges cantidad inicial de tenges
      */
     public Store(int location, int initialTenges) {
@@ -73,6 +75,13 @@ public class Store {
             shape.changeColor("gray");
         }
         return temp;
+    }
+
+    public void changeColor(String newColor) {
+        this.color = newColor;
+        if (!isEmpty && isVisible) {
+            shape.changeColor(this.color);
+        }
     }
 
     /**

@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ import javax.swing.JOptionPane; // <- para popups
  * @version 2.0
  */
 public class SilkRoad {
+
+    List<String> colorsList = java.util.Arrays.asList("red", "black", "blue", "yellow", "green", "magenta", "white");
 
     /**
      * Mapa de tiendas organizadas por ubicación (clave: ubicación, valor: Store)
@@ -112,17 +115,22 @@ public class SilkRoad {
      * @param location La posición donde se ubicará la tienda
      * @param tenges   La cantidad inicial de tenges que contendrá la tienda
      */
-    public void placeStore(int location, int tenges) {
+    public void placeStore(int location, int tenges, String color) {
         if (this.stores.containsKey(location)) {
             this.lastActionSuccess = false;
             showMessage("Ya existe una tienda en esta ubicación.");
             return;
         }
         Store store = new Store(location, tenges);
+        store.changeColor(color);
         this.stores.put(location, store);
         this.lastActionSuccess = true;
         this.redraw();
 
+    }
+
+    public void placeStore(int location, int tenges) {
+        placeStore(location, tenges, this.colorsList.get(2));
     }
 
     /**
@@ -158,16 +166,25 @@ public class SilkRoad {
      * @param location La posición inicial donde se ubicará el robot
      * @param tenges   Parámetro no utilizado en la implementación actual
      */
-    public void placeRobot(int location, int tenges) {
+    public void placeRobot(int location, int tenges, String robotColor) {
+        if (robotColor == null) {
+            robotColor = "random";
+        }
         if (findRobotAtLocation(location) != null) {
             this.lastActionSuccess = false;
             showMessage("Ya existe un robot en esa ubicación.");
             return;
         }
         Robot robot = new Robot(location);
+        robot.changeColor(robotColor);
         this.robots.add(robot);
         this.lastActionSuccess = true;
         this.redraw();
+    }
+
+    // Overload for default color
+    public void placeRobot(int location, int tenges) {
+        placeRobot(location, tenges, this.colorsList.get((int) (Math.random() * this.colorsList.size())));
     }
 
     /**

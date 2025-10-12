@@ -4,10 +4,12 @@ import java.util.Random;
  * Representa un robot que puede moverse a lo largo del camino de SilkRoad
  * y recolectar tenges desde las tiendas.
  * 
- * Cada robot tiene una ubicación, una posición inicial, y un contador de ganancias.
- * También cuenta con una representación visual (círculo) que se dibuja en el canvas.
+ * Cada robot tiene una ubicación, una posición inicial, y un contador de
+ * ganancias.
+ * También cuenta con una representación visual (círculo) que se dibuja en el
+ * canvas.
  * 
- * @author 
+ * @author
  * @version 1.0
  */
 public class Robot {
@@ -46,7 +48,7 @@ public class Robot {
         this.shape.changeSize(20);
         this.shape.changeColor("black");
 
-        //Nueva lógica: ubicar el robot sobre el camino espiral
+        // Nueva lógica: ubicar el robot sobre el camino espiral
         int targetX = 140;
         int targetY = 150;
 
@@ -99,6 +101,7 @@ public class Robot {
 
     /**
      * Mueve el robot a una nueva ubicación.
+     * 
      * @param newPosition nueva posición del robot
      */
     public void moveTo(int newPosition) {
@@ -143,5 +146,9 @@ public class Robot {
         this.shape.moveVertical(deltaY);
         this.currentX = x;
         this.currentY = y;
+    }
+
+    public void changeColor(String newColor) {
+        this.shape.changeColor(newColor);
     }
 }
