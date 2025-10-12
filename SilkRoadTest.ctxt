@@ -1,9 +1,9 @@
 #BlueJ class context
 comment0.target=SilkRoadTest
-comment0.text=\n\ Clase\ de\ pruebas\ para\ SilkRoad.\n\ Contiene\ pruebas\ unitarias\ para\ todos\ los\ m\u00E9todos\ p\u00FAblicos\ de\ la\ clase\n\ SilkRoad.\n\ Para\ cada\ m\u00E9todo\ se\ incluyen\ 2\ pruebas\ que\ pasan\ y\ 1\ que\ falla\n\ intencionalmente.\n\ \n\ @author\ MorenoRubiano\n\ @version\ 1.0\n
+comment0.text=\r\n\ Clase\ de\ pruebas\ para\ SilkRoad.\r\n\ Contiene\ pruebas\ unitarias\ para\ todos\ los\ m\u00E9todos\ p\u00FAblicos\ de\ la\ clase\r\n\ SilkRoad.\r\n\ Para\ cada\ m\u00E9todo\ se\ incluyen\ 2\ pruebas\ que\ pasan\ y\ 1\ que\ falla\r\n\ intencionalmente.\r\n\ \r\n\ @author\ MorenoRubiano\r\n\ @version\ 1.0\r\n
 comment1.params=
 comment1.target=void\ setUp()
-comment1.text=\n\ Configuraci\u00F3n\ inicial\ antes\ de\ cada\ prueba.\n\ Se\ ejecuta\ antes\ de\ cada\ m\u00E9todo\ @Test.\n
+comment1.text=\r\n\ Configuraci\u00F3n\ inicial\ antes\ de\ cada\ prueba.\r\n\ Se\ ejecuta\ antes\ de\ cada\ m\u00E9todo\ @Test.\r\n
 comment10.params=
 comment10.target=void\ testPlaceRobotDuplicatePositionFail()
 comment11.params=

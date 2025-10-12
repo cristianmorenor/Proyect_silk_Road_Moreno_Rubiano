@@ -121,6 +121,7 @@ public class SilkRoad {
         Store store = new Store(location, tenges);
         this.stores.put(location, store);
         this.lastActionSuccess = true;
+        this.redraw();
 
     }
 
@@ -144,6 +145,7 @@ public class SilkRoad {
         store.makeInvisible();
         this.stores.remove(location);
         this.lastActionSuccess = true;
+        this.redraw();
     }
 
     /**
@@ -165,6 +167,7 @@ public class SilkRoad {
         Robot robot = new Robot(location);
         this.robots.add(robot);
         this.lastActionSuccess = true;
+        this.redraw();
     }
 
     /**
@@ -187,6 +190,7 @@ public class SilkRoad {
         robot.makeInvisible();
         this.robots.remove(robot);
         this.lastActionSuccess = true;
+        this.redraw();
 
     }
 
@@ -243,6 +247,7 @@ public class SilkRoad {
             updateProFitBar(totalProfit(), profit());
         }
 
+        this.redraw();
         this.lastActionSuccess = true;
     }
 
@@ -389,7 +394,7 @@ public class SilkRoad {
      * Calcula la espiral con la longitud configurada y la hace visible
      * en el canvas. Si no hay spiralPath disponible, no hace nada.
      */
-    private  void showSpiral() {
+    private void showSpiral() {
         if (spiralPath != null) {
             spiralPath.calcSpiral(this.lengh);
             spiralPath.makeVisible();
@@ -450,6 +455,11 @@ public class SilkRoad {
         }
     }
 
+    public void redraw() {
+        this.makeInvisible();
+        this.makeVisible();
+    }
+
     /**
      * Finaliza y oculta todos los elementos visuales del juego.
      * 
@@ -488,12 +498,8 @@ public class SilkRoad {
         System.exit(0);
     }
 
-    // ======= Agregado: método requerido por el enunciado =======
-    /**
-     * Retorna la ganancia máxima posible del simulador según la longitud del camino.
-     * (Se mantiene profitBar() para el valor actual mostrado en la barra).
-     * @return máximo profit teórico (lengh * 100)
-     */
+    // TODO: ciclo 1 - retorna la ganacia maxima que se podria obtener solucion
+    // analitica
     public int profit() {
         return this.lengh * 100;
     }
