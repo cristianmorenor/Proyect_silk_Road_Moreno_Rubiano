@@ -73,7 +73,9 @@ public class SilkRoad {
         this.spiralPath = new SpiralPath(20, 20);
         this.profitBar = new ProfitBar(300, 300, lenght * 100);
         this.lengh = lenght;
-        this.makeVisible(); // (se mantiene como lo tenías)
+        if (!isRunningUnderJUnit()) {
+            this.makeVisible();
+        }
     }
 
     /**
@@ -552,8 +554,10 @@ public class SilkRoad {
         profitBar.makeInvisible();
 
         this.lastActionSuccess = true;
-        // Ajuste: terminar ejecución del programa
-        System.exit(0);
+        // terminar ejecución del programa pero se ajusta para no cerrar bluej en modo test
+        if (!isRunningUnderJUnit()) {
+            System.exit(0);
+        }
     }
 
     // TODO: ciclo 1 - retorna la ganacia maxima que se podria obtener solucion
@@ -563,10 +567,31 @@ public class SilkRoad {
     }
 
     // ======= Utilidad: popups solo si el simulador está visible =======
+    
     private void showMessage(String message) {
-        // Mostrar popups SOLO si hay elementos visibles del simulador
-        if (this.profitBar != null && this.profitBar.isVisible()) {
-            JOptionPane.showMessageDialog(null, message);
+    // Si se detecta que la ejecución ocurre dentro de JUnit (modo prueba),
+    // no mostrar el JOptionPane para evitar bloqueos.
+    if (isRunningUnderJUnit()) {
+        System.out.println("[Mensaje omitido en test]: " + message);
+        return;
+    }
+
+    if (this.profitBar != null && this.profitBar.isVisible()) {
+        JOptionPane.showMessageDialog(null, message);
+    }
+    }
+
+    /**
+     * Detecta si el programa se está ejecutando bajo JUnit (por BlueJ o consola).
+     * Retorna true si se detecta una clase de test en la pila de ejecución.
+     */
+    private boolean isRunningUnderJUnit() {
+        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+            String className = element.getClassName();
+            if (className.startsWith("org.junit.") || className.contains("SilkRoadTest")) {
+                return true;
+            }
         }
+        return false;
     }
 }
