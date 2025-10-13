@@ -462,21 +462,27 @@ public class SilkRoad {
     }
 
     public void makeVisible() {
-        showSpiral();
-        showProfitBar();
-        // Reposicionar y mostrar tiendas
-        for (Store store : this.stores.values()) {
-            int[] xy = mapLocationToCanvas(store.getLocation());
-            store.updateVisualPosition(xy[0], xy[1] + 10);
-            store.makeVisible();
-        }
-        // Reposicionar y mostrar robots
-        for (Robot robot : this.robots) {
-            int[] xy = mapLocationToCanvas(robot.getPosition());
-            robot.updateVisualPosition(xy[0], xy[1] - 10);
-            robot.makeVisible();
-        }
+    // Primero dibujar la espiral para que quede al fondo
+    showSpiral();
+
+    //mostrar tiendas (encima del camino)
+    for (Store store : this.stores.values()) {
+        int[] xy = mapLocationToCanvas(store.getLocation());
+        store.updateVisualPosition(xy[0], xy[1] + 10);
+        store.makeVisible();
     }
+
+    // Luego mostrar robots (encima de tiendas)
+    for (Robot robot : this.robots) {
+        int[] xy = mapLocationToCanvas(robot.getPosition());
+        robot.updateVisualPosition(xy[0], xy[1] - 10);
+        robot.makeVisible();
+    }
+
+    // Finalmente mostrar la barra (encima de todo)
+    showProfitBar();
+    }
+
 
     public void makeInvisible() {
         hideSpiral();
@@ -493,17 +499,15 @@ public class SilkRoad {
      * Redibuja solo los elementos dinámicos del juego (robots y tiendas).
      * NO redibuja la espiral ni la barra de progreso, que son elementos estáticos.
      */
-    public void redraw() {
-        // Solo redibujar elementos que cambian de posición
-        for (Store store : this.stores.values()) {
-            store.makeInvisible();
-            store.makeVisible();
-        }
-        for (Robot robot : this.robots) {
-            robot.makeInvisible();
-            robot.makeVisible();
-        }
+    public void redraw() { // Solo redibujar elementos que cambian de posición 
+    for (Store store : this.stores.values()) { 
+        store.makeInvisible(); store.makeVisible(); } 
+    for (Robot robot : this.robots) { 
+        robot.makeInvisible(); 
+        robot.makeVisible(); 
     }
+    }
+    
 
     /**
      * Mapea una ubicación del camino (location) a coordenadas de canvas (x,y)
