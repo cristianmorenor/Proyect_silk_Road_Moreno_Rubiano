@@ -23,7 +23,7 @@ import javax.swing.JOptionPane; // <- para popups
  */
 public class SilkRoad {
 
-    List<String> colorsList = java.util.Arrays.asList("red", "black", "blue", "yellow", "green", "magenta", "white");
+    List<String> colorsList = java.util.Arrays.asList("red", "black", "blue", "yellow", "green", "magenta");
 
     /**
      * Mapa de tiendas organizadas por ubicación (clave: ubicación, valor: Store)
@@ -70,8 +70,7 @@ public class SilkRoad {
         this.robots = new ArrayList<>();
         this.solutionAbstraction = new HashMap<>();
         // Ajuste: espiral depende de la longitud (espesor proporcional)
-        int dynamicThickness = Math.max(10, Math.min(40, lenght));
-        this.spiralPath = new SpiralPath(20, 20, dynamicThickness);
+        this.spiralPath = new SpiralPath(20, 20);
         this.profitBar = new ProfitBar(300, 300, lenght * 100);
         this.lengh = lenght;
         this.makeVisible(); // (se mantiene como lo tenías)
@@ -122,6 +121,9 @@ public class SilkRoad {
             return;
         }
         Store store = new Store(location, tenges);
+        // Posicionar en el canvas según la espiral (10px ABAJO)
+        int[] xy = mapLocationToCanvas(location);
+        store.updateVisualPosition(xy[0], xy[1] + 10);
         store.changeColor(color);
         this.stores.put(location, store);
         this.lastActionSuccess = true;
@@ -176,6 +178,9 @@ public class SilkRoad {
             return;
         }
         Robot robot = new Robot(location);
+        // Posicionar en el canvas según la espiral (10px ARRIBA)
+        int[] xy = mapLocationToCanvas(location);
+        robot.updateVisualPosition(xy[0], xy[1] - 10);
         robot.changeColor(robotColor);
         this.robots.add(robot);
         this.lastActionSuccess = true;
@@ -252,7 +257,10 @@ public class SilkRoad {
         }
 
         int newPosition = location + meters;
-        robot.moveTo(newPosition); // Ajuste: mover figura también (aunque esté invisible)
+        robot.moveTo(newPosition);
+        // Actualizar posición visual desde SilkRoad usando la espiral
+        int[] xy = mapLocationToCanvas(newPosition);
+        robot.updateVisualPosition(xy[0], xy[1] - 10); // 10px ARRIBA
 
         // Ajuste: si hay tienda en la nueva posición, vaciarla y sumar al robot
         Store store = this.stores.get(newPosition);
@@ -290,6 +298,8 @@ public class SilkRoad {
     public void returnRobots() {
         for (Robot robot : this.robots) {
             robot.goInitialPosition();
+            int[] xy = mapLocationToCanvas(robot.getPosition());
+            robot.updateVisualPosition(xy[0], xy[1] - 10);
         }
         this.lastActionSuccess = true;
     }
@@ -452,11 +462,16 @@ public class SilkRoad {
     public void makeVisible() {
         showSpiral();
         showProfitBar();
+        // Reposicionar y mostrar tiendas
         for (Store store : this.stores.values()) {
+            int[] xy = mapLocationToCanvas(store.getLocation());
+            store.updateVisualPosition(xy[0], xy[1] + 10);
             store.makeVisible();
         }
-
+        // Reposicionar y mostrar robots
         for (Robot robot : this.robots) {
+            int[] xy = mapLocationToCanvas(robot.getPosition());
+            robot.updateVisualPosition(xy[0], xy[1] - 10);
             robot.makeVisible();
         }
     }
@@ -472,9 +487,35 @@ public class SilkRoad {
         }
     }
 
+    /**
+     * Redibuja solo los elementos dinámicos del juego (robots y tiendas).
+     * NO redibuja la espiral ni la barra de progreso, que son elementos estáticos.
+     */
     public void redraw() {
-        this.makeInvisible();
-        this.makeVisible();
+        // Solo redibujar elementos que cambian de posición
+        for (Store store : this.stores.values()) {
+            store.makeInvisible();
+            store.makeVisible();
+        }
+        for (Robot robot : this.robots) {
+            robot.makeInvisible();
+            robot.makeVisible();
+        }
+    }
+
+    /**
+     * Mapea una ubicación del camino (location) a coordenadas de canvas (x,y)
+     * usando SpiralPath. Asegura que la espiral esté calculada antes de mapear.
+     */
+    private int[] mapLocationToCanvas(int location) {
+        if (this.spiralPath == null) {
+            return new int[] { 150, 150 }; // centro por defecto
+        }
+        // Si aún no se ha calculado, calcular sin hacer visible
+        if (this.spiralPath.getTotalLength() == 0) {
+            this.spiralPath.calcSpiral(this.lengh);
+        }
+        return this.spiralPath.getPositionOnPath(location);
     }
 
     /**

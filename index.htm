@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Espiral punto a punto - versión grande</title>
+<style>
+  body {
+    background:#fafafa;
+    font-family:sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  canvas {
+    border:1px solid #aaa;
+    margin-top:10px;
+  }
+  input { width:300px; }
+</style>
+</head>
+<body>
+<h3>Espiral grande que ocupa casi todo el canvas</h3>
+<canvas id="spiralCanvas"></canvas>
+<label>Posición (s): 
+  <input type="range" id="slider" min="0" max="2000" value="0">
+</label>
+<pre id="info"></pre>
+
+<script>
+function drawSpiral(canvasId, length, width, height) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  canvas.width = width;
+  canvas.height = height;
+
+  const cx = width / 2;
+  const cy = height / 2;
+
+  // === Parámetros de la espiral ===
+  const margen = Math.min(width, height) * 0.05; // 5% de margen
+  const radioMax = Math.min(width, height) / 2 - margen;
+  const vueltasMax = 10; // más vueltas = espiral más completa
+
+  const a = margen; // radio inicial
+  const b = (radioMax - a) / (2 * Math.PI * vueltasMax);
+
+  // === Construcción de la espiral ===
+  let theta = 0;
+  let totalLength = 0;
+  const points = [];
+
+  let prevX = cx + a * Math.cos(theta);
+  let prevY = cy + a * Math.sin(theta);
+  points.push({ x: prevX, y: prevY });
+
+  const maxTheta = 2 * Math.PI * vueltasMax;
+  const deltaTheta = 0.02; // más pequeño = más puntos (más suave)
+
+  while (theta < maxTheta && totalLength < length) {
+    theta += deltaTheta;
+    const r = a + b * theta;
+    const x = cx + r * Math.cos(theta);
+    const y = cy + r * Math.sin(theta);
+
+    const dx = x - prevX;
+    const dy = y - prevY;
+    totalLength += Math.sqrt(dx * dx + dy * dy);
+
+    if (totalLength <= length) {
+      points.push({ x, y });
+      prevX = x;
+      prevY = y;
+    } else break;
+  }
+
+  // === Verificación de límites ===
+  const maxR = a + b * theta;
+  if (maxR > radioMax + 1) {
+    console.warn("Advertencia: la espiral casi toca los bordes del canvas");
+  }
+
+  // === Dibujo ===
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = "black";
+  for (let i = 0; i < points.length; i += Math.floor(points.length / 700)) {
+    const p = points[i];
+    ctx.fillRect(p.x, p.y, 1, 1);
+  }
+
+  return { points, totalLength };
+}
+
+function getSpiralPoint(points, s, totalLength) {
+  if (s < 0 || s > totalLength) throw new Error("s fuera de rango");
+  const ratio = s / totalLength;
+  const index = Math.floor(ratio * (points.length - 1));
+  return points[index];
+}
+
+// === Inicialización ===
+const { points, totalLength } = drawSpiral('spiralCanvas', 6000, 600, 600);
+const slider = document.getElementById('slider');
+const info = document.getElementById('info');
+const ctx = document.getElementById('spiralCanvas').getContext('2d');
+
+slider.max = totalLength;
+
+slider.addEventListener('input', () => {
+  const s = parseFloat(slider.value);
+  const p = getSpiralPoint(points, s, totalLength);
+  
+  // Redibujar
+  ctx.clearRect(0, 0, 600, 600);
+  for (let i = 0; i < points.length; i += Math.floor(points.length / 700)) {
+    const pt = points[i];
+    ctx.fillRect(pt.x, pt.y, 1, 1);
+  }
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 3, 0, 2*Math.PI);
+  ctx.fill();
+  
+  info.textContent = `s = ${s.toFixed(1)} → x=${p.x.toFixed(1)}, y=${p.y.toFixed(1)}`;
+});
+</script>
+</body>
+</html>

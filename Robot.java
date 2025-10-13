@@ -1,5 +1,3 @@
-import java.util.Random;
-
 /**
  * Representa un robot que puede moverse a lo largo del camino de SilkRoad
  * y recolectar tenges desde las tiendas.
@@ -19,20 +17,6 @@ public class Robot {
     private Circle shape;
     private boolean isVisible;
 
-    // Coordenadas actuales del dibujo (para mover visualmente)
-    private int currentX;
-    private int currentY;
-
-    // Referencia estática al SpiralPath para posicionar el robot en el camino
-    private static SpiralPath spiralPathRef;
-
-    /**
-     * Conecta la clase Robot con el SpiralPath activo en SilkRoad.
-     */
-    public static void setSpiralPath(SpiralPath path) {
-        spiralPathRef = path;
-    }
-
     /**
      * Crea un nuevo robot en una ubicación específica.
      * 
@@ -45,24 +29,8 @@ public class Robot {
         this.isVisible = false;
 
         this.shape = new Circle();
-        this.shape.changeSize(20);
+        this.shape.changeSize(10);
         this.shape.changeColor("black");
-
-        // Nueva lógica: ubicar el robot sobre el camino espiral
-        int targetX = 140;
-        int targetY = 150;
-
-        if (spiralPathRef != null) {
-            int[] pos = spiralPathRef.getPositionOnPath(position);
-            targetX = pos[0];
-            targetY = pos[1];
-        }
-
-        // Mover la figura a la posición visual calculada
-        this.shape.moveHorizontal(targetX - 140);
-        this.shape.moveVertical(targetY - 15);
-        this.currentX = targetX;
-        this.currentY = targetY;
     }
 
     /**
@@ -106,12 +74,7 @@ public class Robot {
      */
     public void moveTo(int newPosition) {
         this.position = newPosition;
-
-        // Actualizar posición visual según el camino espiral
-        if (spiralPathRef != null) {
-            int[] pos = spiralPathRef.getPositionOnPath(newPosition);
-            updateVisualPosition(pos[0], pos[1]);
-        }
+        // La posición visual se actualizará desde SilkRoad usando SpiralPath
     }
 
     /**
@@ -126,11 +89,7 @@ public class Robot {
      */
     public void goInitialPosition() {
         this.position = initialPosition;
-
-        if (spiralPathRef != null) {
-            int[] pos = spiralPathRef.getPositionOnPath(initialPosition);
-            updateVisualPosition(pos[0], pos[1]);
-        }
+        // La posición visual se actualizará desde SilkRoad usando SpiralPath
     }
 
     /**
@@ -140,12 +99,7 @@ public class Robot {
      * @param y coordenada Y destino
      */
     public void updateVisualPosition(int x, int y) {
-        int deltaX = x - this.currentX;
-        int deltaY = y - this.currentY;
-        this.shape.moveHorizontal(deltaX);
-        this.shape.moveVertical(deltaY);
-        this.currentX = x;
-        this.currentY = y;
+        this.shape.setXY(x, y);
     }
 
     public void changeColor(String newColor) {
