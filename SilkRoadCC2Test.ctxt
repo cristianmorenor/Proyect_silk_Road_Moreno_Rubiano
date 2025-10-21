@@ -1,0 +1,26 @@
+#BlueJ class context
+comment0.target=SilkRoadCC2Test
+comment0.text=\n\ Clase\ de\ prueba\ para\ el\ Ciclo\ 2\ de\ SilkRoad.\n\ \n\ Verificar\ la\ correcta\ implementaci\u00F3n\ de\ los\ m\u00E9todos\:\n\ -\ moveRobots()\n\ -\ findBestStore()\n\ -\ highlightBestRobot()\n\ -\ profitPerMove()\n\ -\ emptiedStores()\n\ @Autores\:\ CristianMoreno-JuanitaRubiano\n\ @version\ Ciclo2_2025\n
+comment1.params=
+comment1.target=void\ setUp()
+comment2.params=
+comment2.target=void\ tearDown()
+comment3.params=
+comment3.target=void\ accordingMRShouldMoveRobotsToBestStores()
+comment3.text=\n\ Prueba\ que\ verifica\ que\ los\ robots\ se\ mueven\ autom\u00E1ticamente\ hacia\ la\ mejor\ tienda\n\ seg\u00FAn\ la\ rentabilidad\ (ratio)\ \:\ ganancia/distancia.\n
+comment4.params=
+comment4.target=void\ accordingMRShouldFindBestStoreByRatio()
+comment4.text=\n\ Verifica\ que\ el\ m\u00E9todo\ findBestStore\ selecciona\ correctamente\n\ la\ tienda\ con\ mejor\ relaci\u00F3n\ tenges/distancia.\n
+comment5.params=
+comment5.target=void\ accordingMRShouldHighlightBestRobot()
+comment5.text=\n\ Verificar\ que\ el\ robot\ con\ mayor\ ganancia\ sea\ detectado\ y\ parpadee\ como\ pide\ el\ requisito\ funciona\n
+comment6.params=
+comment6.target=void\ accordingMRShouldUpdateRobotProfitAfterMoving()
+comment6.text=\n\ Verificar\ que\ despu\u00E9s\ del\ movimiento,\ el\ robot\ con\ m\u00E1s\ tenges\ tenga\ mayor\ profit.\n\ Para\ poder\ destacarlo\n
+comment7.params=
+comment7.target=void\ accordingMRShouldReturnValidProfitPerMoveMatrix()
+comment7.text=\n\ Verificar\ que\ el\ m\u00E9todo\ profitPerMove()\ devuelva\ informaci\u00F3n\ coherente\ con\ lo\ que\ se\ pide\n\ Lo\ que\ se\ pide\ es\ \ la\ ganancia\ por\ movimiento\ de\ cada\ robot\n
+comment8.params=
+comment8.target=void\ accordingMRShouldListEmptiedStoresCorrectly()
+comment8.text=\n\ Verificar\ que\ el\ m\u00E9todo\ emptiedStores()\ reporte\ correctamente\ las\ tiendas\ vac\u00EDas\n\ El\ reporte\ se\ hace\ despues\ de\ cada\ movimiento\ de\ moveRobot()\n
+numComments=9
