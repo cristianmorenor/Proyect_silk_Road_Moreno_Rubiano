@@ -1,3 +1,4 @@
+
 /**
  * Representa un robot que puede moverse a lo largo del camino de SilkRoad
  * y recolectar tenges desde las tiendas.
@@ -10,12 +11,17 @@
  * @author
  * @version 1.0
  */
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Robot {
     private int position;
     private int profit;
     private int initialPosition;
     private Circle shape;
     private boolean isVisible;
+    private List<Integer> profitHistory;// Historial de ganancias por cada movimiento que el robot hace
 
     /**
      * Crea un nuevo robot en una ubicación específica.
@@ -27,6 +33,9 @@ public class Robot {
         this.initialPosition = position;
         this.profit = 0;
         this.isVisible = false;
+
+        this.profitHistory = new ArrayList<>();
+        this.profitHistory.add(0);// ganancia inicial
 
         this.shape = new Circle();
         this.shape.changeSize(10);
@@ -82,6 +91,24 @@ public class Robot {
      */
     public void pickTenges(int tenges) {
         this.profit += tenges;
+        this.profitHistory.add(this.profit);// registro l aganancia actual
+    }
+
+    public List<Integer> getProfitHistory() {
+        return new ArrayList<>(profitHistory);// retorno una copia para encapsulacion
+    }
+
+    /**
+     * Retorna la ganancia obtenida en un movimiento específico.
+     * 
+     * @param moveIndex índice del movimiento (0 = inicial)
+     * @return ganancia en ese movimiento, o -1 si el índice es inválido
+     */
+    public int getProfitAtMove(int moveIndex) {
+        if (moveIndex >= 0 && moveIndex < profitHistory.size()) {
+            return profitHistory.get(moveIndex);
+        }
+        return -1; // Indicar índice inválido
     }
 
     /**

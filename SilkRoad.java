@@ -6,64 +6,39 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane; // <- para popups
 
 /**
- * La clase SilkRoad representa el juego principal de la Ruta de la Seda.
+ * Controlador principal del juego "Ruta de la Seda".
  * 
- * Esta clase actúa como el controlador principal del juego, gestionando:
- * - Las tiendas distribuidas a lo largo de la ruta
- * - Los robots que viajan y recolectan tenges
- * - La barra de progreso que muestra las ganancias
- * - Las soluciones y abstracciones del juego
+ * Orquesta la simulación: crea y administra tiendas y robots, calcula y muestra
+ * las ganancias, y renderiza la ruta en espiral. Es la única clase que traduce
+ * posiciones lógicas (location) a coordenadas del canvas usando
+ * {@link SpiralPath};
+ * robots y tiendas solo dibujan en el (x,y) que esta clase les asigna.
  * 
- * El juego simula el comercio en la histórica Ruta de la Seda, donde
- * los robots representan comerciantes que viajan entre tiendas para
- * maximizar sus ganancias recolectando tenges (moneda del juego).
+ * Funciones clave: colocar/eliminar tiendas y robots, mover robots, reiniciar
+ * el
+ * estado, y mostrar/ocultar los elementos visuales (espiral y barra de
+ * progreso).
  * 
- * @author MorenoRubiano
- * @version 2.0
+ * Autor: MorenoRubiano
+ * Versión: 2.1
  */
 public class SilkRoad {
 
     List<String> colorsList = java.util.Arrays.asList("red", "black", "blue", "yellow", "green", "magenta");
 
-    /**
-     * Mapa de tiendas organizadas por ubicación (clave: ubicación, valor: Store)
-     */
     private final Map<Integer, Store> stores;
-
-    /** Lista de robots que participan en el juego como comerciantes */
     private final ArrayList<Robot> robots;
-
-    /** Objeto que representa el patrón espiral visual del juego */
     private final SpiralPath spiralPath;
-
-    /**
-     * Mapa que relaciona robots con tiendas para abstraer y almacenar soluciones
-     * del juego (clave: Robot, valor: Store asociada)
-     */
     private final HashMap<Robot, Store> solutionAbstraction;
-
-    /** Barra de progreso visual que muestra las ganancias acumuladas del juego */
     private final ProfitBar profitBar;
-
-    /**
-     * Indicador del éxito de la última acción ejecutada
-     * true si la última operación fue exitosa, false en caso contrario
-     */
     private boolean lastActionSuccess = true;
-
-    /** Longitud del recorrido o número de segmentos del juego */
     private int lengh;
 
     /**
      * Constructor del ciclo 1 - Inicializa el juego con una longitud específica.
-     * 
-     * Crea una nueva instancia del juego SilkRoad con las estructuras de datos
-     * necesarias y configura la barra de progreso basada en la longitud
-     * proporcionada.
      * El máximo de la barra de progreso se calcula como longitud * 100.
      * 
-     * @param lenght La longitud del recorrido que determina el máximo de ganancias
-     *               posibles
+     * @param lenght La longitud de la ruta de seda.
      */
     public SilkRoad(int lenght) {
         this.stores = new TreeMap<>();
@@ -73,24 +48,65 @@ public class SilkRoad {
         this.spiralPath = new SpiralPath(20, 20);
         this.profitBar = new ProfitBar(300, 300, lenght * 100);
         this.lengh = lenght;
-        this.makeVisible(); // (se mantiene como lo tenías)
+        this.makeVisible();
     }
 
     /**
      * Constructor del ciclo 2 - Inicializa el juego con una matriz de días.
      * 
-     * Crea una nueva instancia del juego SilkRoad para escenarios multi-día.
-     * La barra de progreso se configura basada en el número de columnas de la
-     * matriz de días multiplicado por 100.
+     * Formato de la matriz days:
+     * - Cada fila representa un elemento (tienda o robot)
+     * - Columna 0: Tipo (0 = tienda, 1 = robot)
+     * - Columna 1: Ubicación en el camino
+     * - Columna 2: Tenges (para tiendas) o 0 (para robots)
      * 
-     * @param days Matriz bidimensional que representa los días del juego
+     * @param days Matriz bidimensional que representa la configuración inicial
      */
     public SilkRoad(int[][] days) {
         this.stores = new TreeMap<>();
         this.robots = new ArrayList<>();
-        this.spiralPath = null;
         this.solutionAbstraction = new HashMap<>();
-        this.profitBar = new ProfitBar(300, 300, days[0].length * 100);
+
+        // Calculo la longitud de la ruta de seda con la posicion mas lejana
+        int maxLocation = 0;
+        for (int[] element : days) {
+            if (element.length >= 2 && element[1] > maxLocation) {
+                maxLocation = element[1];
+            }
+        }
+
+        this.lengh = maxLocation + 100;// Agrego una margen
+        // inicializo el espiral y l barra de progresp
+        this.spiralPath = new SpiralPath(20, 20);
+
+        // calculo el profitmax
+        int maxProfit = 0;
+        for (int[] element : days) {
+            if (element.length >= 3 && element[0] == 0) { // Es tienda
+                maxProfit += element[2];
+            }
+        }
+        this.profitBar = new ProfitBar(300, 300, maxProfit);
+
+        // Crear las tiendas y robots automaticamente
+        for (int[] element : days) {
+            if (element.length < 2)
+                continue;
+
+            int type = element[0];
+            int location = element[1];
+
+            if (type == 0 && element.length >= 3) {
+                // Es una tienda
+                int tenges = element[2];
+                placeStore(location, tenges);
+            } else if (type == 1) {
+                // Es un robot
+                placeRobot(location, 0);
+            }
+        }
+
+        this.makeVisible();
 
     }
 
@@ -162,8 +178,7 @@ public class SilkRoad {
      * Coloca un nuevo robot en una ubicación específica.
      * 
      * Crea una nueva instancia de Robot con la posición especificada y lo agrega
-     * a la lista de robots. El parámetro tenges no se utiliza en la implementación
-     * actual.
+     * a la lista de robots.
      * 
      * @param location La posición inicial donde se ubicará el robot
      * @param tenges   Parámetro no utilizado en la implementación actual
@@ -260,7 +275,7 @@ public class SilkRoad {
         robot.moveTo(newPosition);
         // Actualizar posición visual desde SilkRoad usando la espiral
         int[] xy = mapLocationToCanvas(newPosition);
-        robot.updateVisualPosition(xy[0], xy[1] - 10); // 10px ARRIBA
+        robot.updateVisualPosition(xy[0], xy[1] - 10);
 
         // Ajuste: si hay tienda en la nueva posición, vaciarla y sumar al robot
         Store store = this.stores.get(newPosition);
@@ -274,6 +289,48 @@ public class SilkRoad {
 
         this.redraw();
         this.lastActionSuccess = true;
+    }
+
+    /**
+     * ciclo2
+     * Mueve todos los robots usando estrategia de mejor ratio ganancia/distancia.
+     */
+    public void moveRobots() {
+        for (Robot robot : this.robots) {
+            int currentPos = robot.getPosition();
+
+            Store bestStore = findBestStore(currentPos);
+
+            if (bestStore != null) {
+                int distance = bestStore.getLocation() - currentPos;
+                if (distance > 0) {
+                    moveRobot(currentPos, distance);
+                }
+            }
+        }
+        this.lastActionSuccess = true;
+    }
+
+    /**
+     * Encuentra la tienda con mejor ratio tenges/distancia.
+     */
+    private Store findBestStore(int fromLocation) {
+        Store best = null;
+        double bestRatio = 0;
+
+        for (Store store : this.stores.values()) {
+            if (!store.isEmpty() && store.getLocation() > fromLocation) {
+                int distance = store.getLocation() - fromLocation;
+                double ratio = (double) store.getTenges() / distance;
+
+                if (ratio > bestRatio) {
+                    bestRatio = ratio;
+                    best = store;
+                }
+            }
+        }
+
+        return best;
     }
 
     /**
@@ -459,6 +516,25 @@ public class SilkRoad {
         profitBar.makeInvisible();
     }
 
+    /**
+     * Retorna información sobre cuántas veces cada tienda ha sido desocupada.
+     * 
+     * @return Matriz donde [i][0] = ubicación, [i][1] = veces vaciada
+     */
+    public int[][] emptiedStores() {
+        // Ordenar por ubicación (ya está ordenado porque es un TreeMap)
+        int[][] result = new int[this.stores.size()][2];
+        int i = 0;
+
+        for (Store store : this.stores.values()) {
+            result[i][0] = store.getLocation();
+            result[i][1] = store.getTimesEmptied();
+            i++;
+        }
+
+        return result;
+    }
+
     public void makeVisible() {
         showSpiral();
         showProfitBar();
@@ -501,6 +577,43 @@ public class SilkRoad {
             robot.makeInvisible();
             robot.makeVisible();
         }
+    }
+    // AGREGAR en SilkRoad.java
+
+    /**
+     * Retorna las ganancias de cada robot en cada movimiento.
+     * 
+     * @return Matriz donde cada fila es un robot y cada columna un movimiento.
+     *         [robot][movimiento] = ganancia acumulada en ese movimiento
+     */
+    public int[][] profitPerMove() {
+        if (this.robots.isEmpty()) {
+            return new int[0][0];
+        }
+
+        // Encontrar el número máximo de movimientos entre todos los robots
+        int maxMoves = 0;
+        for (Robot robot : this.robots) {
+            maxMoves = Math.max(maxMoves, robot.getProfitHistory().size());
+        }
+
+        // Crear matriz
+        int[][] result = new int[this.robots.size()][maxMoves];
+
+        for (int i = 0; i < this.robots.size(); i++) {
+            Robot robot = this.robots.get(i);
+            List<Integer> history = robot.getProfitHistory();
+
+            for (int j = 0; j < maxMoves; j++) {
+                if (j < history.size()) {
+                    result[i][j] = history.get(j);
+                } else {
+                    result[i][j] = robot.getProfit(); // Mantener última ganancia
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -556,8 +669,6 @@ public class SilkRoad {
         System.exit(0);
     }
 
-    // TODO: ciclo 1 - retorna la ganacia maxima que se podria obtener solucion
-    // analitica
     public int profit() {
         return this.lengh * 100;
     }
@@ -569,4 +680,5 @@ public class SilkRoad {
             JOptionPane.showMessageDialog(null, message);
         }
     }
+
 }

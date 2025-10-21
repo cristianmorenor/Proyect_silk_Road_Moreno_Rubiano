@@ -7,6 +7,7 @@ public class Store {
     private int actualTenges;
     private final int initialLocation;
     private Triangle shape;
+    private int timesEmptied;
 
     /**
      * Constructor de la tienda (Store)
@@ -22,6 +23,7 @@ public class Store {
         this.initialTenges = initialTenges;
         this.actualTenges = this.initialTenges;
         this.initialLocation = location;
+        this.timesEmptied = 0; // inicializo el contador de las tiendas
 
         this.shape = new Triangle();
         this.shape.changeSize(15, 15);
@@ -29,7 +31,8 @@ public class Store {
     }
 
     /**
-     * Reabastece la tienda a su cantidad inicial de tenges.
+     * Reabastece la tienda a su cantidad inicial de tenges y cambia su color segun
+     * el requisito de usabilidad
      */
     public void resupply() {
         this.actualTenges = this.initialTenges;
@@ -46,10 +49,17 @@ public class Store {
         int temp = this.actualTenges;
         this.actualTenges = 0;
         this.isEmpty = true;
+        if (temp > 0) {
+            this.timesEmptied++;// incremento si y solo si la tienda tenia tenges
+        }
         if (isVisible) {
             shape.changeColor("gray");
         }
         return temp;
+    }
+
+    public int getTimesEmptied() {
+        return timesEmptied;
     }
 
     public void changeColor(String newColor) {
