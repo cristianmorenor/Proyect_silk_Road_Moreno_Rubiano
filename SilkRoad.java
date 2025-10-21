@@ -536,25 +536,25 @@ public class SilkRoad {
     }
 
     public void makeVisible() {
-    // Primero dibujar la espiral para que quede al fondo
-    showSpiral();
+        // Primero dibujar la espiral para que quede al fondo
+        showSpiral();
 
-    //mostrar tiendas (encima del camino)
-    for (Store store : this.stores.values()) {
-        int[] xy = mapLocationToCanvas(store.getLocation());
-        store.updateVisualPosition(xy[0], xy[1] + 10);
-        store.makeVisible();
-    }
+        // mostrar tiendas (encima del camino)
+        for (Store store : this.stores.values()) {
+            int[] xy = mapLocationToCanvas(store.getLocation());
+            store.updateVisualPosition(xy[0], xy[1] + 10);
+            store.makeVisible();
+        }
 
-    // Luego mostrar robots (encima de tiendas)
-    for (Robot robot : this.robots) {
-        int[] xy = mapLocationToCanvas(robot.getPosition());
-        robot.updateVisualPosition(xy[0], xy[1] - 10);
-        robot.makeVisible();
-    }
+        // Luego mostrar robots (encima de tiendas)
+        for (Robot robot : this.robots) {
+            int[] xy = mapLocationToCanvas(robot.getPosition());
+            robot.updateVisualPosition(xy[0], xy[1] - 10);
+            robot.makeVisible();
+        }
 
-    // Finalmente mostrar la barra (encima de todo)
-    showProfitBar();
+        // Finalmente mostrar la barra (encima de todo)
+        showProfitBar();
     }
 
     public void makeInvisible() {
@@ -572,12 +572,15 @@ public class SilkRoad {
      * Redibuja solo los elementos dinámicos del juego (robots y tiendas).
      * NO redibuja la espiral ni la barra de progreso, que son elementos estáticos.
      */
-    public void redraw() { // Solo redibujar elementos que cambian de posición 
-    for (Store store : this.stores.values()) { 
-        store.makeInvisible(); store.makeVisible(); } 
-    for (Robot robot : this.robots) { 
-        robot.makeInvisible(); 
-        robot.makeVisible(); 
+    public void redraw() { // Solo redibujar elementos que cambian de posición
+        for (Store store : this.stores.values()) {
+            store.makeInvisible();
+            store.makeVisible();
+        }
+        for (Robot robot : this.robots) {
+            robot.makeInvisible();
+            robot.makeVisible();
+        }
     }
 
     /**
@@ -665,7 +668,8 @@ public class SilkRoad {
         profitBar.makeInvisible();
 
         this.lastActionSuccess = true;
-        // terminar ejecución del programa pero se ajusta para no cerrar bluej en modo test
+        // terminar ejecución del programa pero se ajusta para no cerrar bluej en modo
+        // test
         if (!isRunningUnderJUnit()) {
             System.exit(0);
         }
@@ -676,18 +680,18 @@ public class SilkRoad {
     }
 
     // ======= Utilidad: popups solo si el simulador está visible =======
-    
-    private void showMessage(String message) {
-    // Si se detecta que la ejecución ocurre dentro de JUnit (modo prueba),
-    // no mostrar el JOptionPane para evitar bloqueos.
-    if (isRunningUnderJUnit()) {
-        System.out.println("[Mensaje omitido en test]: " + message);
-        return;
-    }
 
-    if (this.profitBar != null && this.profitBar.isVisible()) {
-        JOptionPane.showMessageDialog(null, message);
-    }
+    private void showMessage(String message) {
+        // Si se detecta que la ejecución ocurre dentro de JUnit (modo prueba),
+        // no mostrar el JOptionPane para evitar bloqueos.
+        if (isRunningUnderJUnit()) {
+            System.out.println("[Mensaje omitido en test]: " + message);
+            return;
+        }
+
+        if (this.profitBar != null && this.profitBar.isVisible()) {
+            JOptionPane.showMessageDialog(null, message);
+        }
     }
 
     /**
