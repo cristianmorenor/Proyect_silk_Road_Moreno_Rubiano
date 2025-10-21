@@ -292,8 +292,10 @@ public class SilkRoad {
     }
 
     /**
-     * ciclo2
+     * ciclo2 
      * Mueve todos los robots usando estrategia de mejor ratio ganancia/distancia.
+     * Se calcula mediante el uso de findBestStore para asi tomar la decision 
+     * Al seleccionar la mejor tienda, realiza el desplazamiento donde actualiza la posicion y su estado visual
      */
     public void moveRobots() {
         for (Robot robot : this.robots) {
@@ -312,7 +314,10 @@ public class SilkRoad {
     }
 
     /**
-     * Encuentra la tienda con mejor ratio tenges/distancia.
+     * Metodo para encontrar la mejor tienda para el robot ( la mas rentable)
+     * lo calcula por medio de la relación tenges disponibles / distancia 
+     * Al hacer el calculo de rentabilidad (ratio) hace la eleccion.
+     * @param fromLocation ( posicion actual del robot, de donde se va a calcular distancia)
      */
     private Store findBestStore(int fromLocation) {
         Store best = null;
@@ -517,8 +522,8 @@ public class SilkRoad {
     }
 
     /**
+     * Requisito funcional del ciclo 2
      * Retorna información sobre cuántas veces cada tienda ha sido desocupada.
-     * 
      * @return Matriz donde [i][0] = ubicación, [i][1] = veces vaciada
      */
     public int[][] emptiedStores() {
@@ -542,14 +547,14 @@ public class SilkRoad {
         // mostrar tiendas (encima del camino)
         for (Store store : this.stores.values()) {
             int[] xy = mapLocationToCanvas(store.getLocation());
-            store.updateVisualPosition(xy[0], xy[1] + 10);
+            store.updateVisualPosition(xy[0]+3, xy[1] + 5);
             store.makeVisible();
         }
 
         // Luego mostrar robots (encima de tiendas)
         for (Robot robot : this.robots) {
             int[] xy = mapLocationToCanvas(robot.getPosition());
-            robot.updateVisualPosition(xy[0], xy[1] - 10);
+            robot.updateVisualPosition(xy[0]-4, xy[1] - 3); //Ajustes visuales que se hacen
             robot.makeVisible();
         }
 
@@ -584,8 +589,9 @@ public class SilkRoad {
     }
 
     /**
+     * Requisito funcional ciclo 2
+     * Consultar ganacias robot por movimiento
      * Retorna las ganancias de cada robot en cada movimiento.
-     * 
      * @return Matriz donde cada fila es un robot y cada columna un movimiento.
      *         [robot][movimiento] = ganancia acumulada en ese movimiento
      */
@@ -618,6 +624,27 @@ public class SilkRoad {
 
         return result;
     }
+    
+    /**
+     * Requisito funcional ciclo 2
+     * Va a destacar el robot con mayor ganancia 
+     * Se destaca por medio del llamado al metodo blink de robot (Parpadeo)
+     * El metodo se llama despues de mover los robots ( puede cambiar por cada movimiento )
+     * 
+     */
+    public void highlightBestRobot() {
+        if (this.robots.isEmpty()) return;
+
+        Robot best = this.robots.get(0);
+        for (Robot r : this.robots) {
+            if (r.getProfit() > best.getProfit()) {
+                best = r;
+            }
+        }
+
+        // Hace que el robot identificado con mayor ganancia parpadee
+        best.blink();
+    }
 
     /**
      * Mapea una ubicación del camino (location) a coordenadas de canvas (x,y)
@@ -631,7 +658,13 @@ public class SilkRoad {
         if (this.spiralPath.getTotalLength() == 0) {
             this.spiralPath.calcSpiral(this.lengh);
         }
-        return this.spiralPath.getPositionOnPath(location);
+        int[] xy = this.spiralPath.getPositionOnPath(location);
+
+        // Ajuste que se hace para pode alinear visualmente las figuras al camino
+        xy[0] -= 10;  
+        xy[1] -= 10;  
+
+        return xy;
     }
 
     /**

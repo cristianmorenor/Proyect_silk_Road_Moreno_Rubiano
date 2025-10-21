@@ -8,7 +8,7 @@
  * También cuenta con una representación visual (círculo) que se dibuja en el
  * canvas.
  * 
- * @author
+ * @author Moreno-Rubiano
  * @version 1.0
  */
 
@@ -131,5 +131,22 @@ public class Robot {
 
     public void changeColor(String newColor) {
         this.shape.changeColor(newColor);
+    }
+    
+    /**
+     * Requisito usabilidad del ciclo 2
+     * Hace que el robot parpadee varias veces para destacarlo visualmente 
+     */
+    public void blink() {
+        try {
+            for (int i = 0; i < 5; i++) {
+                this.makeInvisible();
+                Thread.sleep(250); // 0.25 segundos invisible (intervalos de parpadeo)
+                this.makeVisible();
+                Thread.sleep(250); // 0.25 segundos visible
+            }
+        } catch (InterruptedException e) {
+
+        }
     }
 }

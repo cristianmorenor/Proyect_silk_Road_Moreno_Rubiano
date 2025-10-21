@@ -215,8 +215,16 @@ public class SpiralPath {
                 dot.changeColor("black");
 
                 // Posicionar el círculo (Circle tiene posición base en 20,15)
-                dot.moveHorizontal((int) p.x - 20);
-                dot.moveVertical((int) p.y - 15);
+                double scaleFactor = 0.8; // reduce un poco el radio general
+                double offsetX = (canvasWidth / 2.0) * (1 - scaleFactor);
+                double offsetY = (canvasHeight / 2.0) * (1 - scaleFactor);
+
+                int drawX = (int) ((p.x * scaleFactor) + offsetX);
+                int drawY = (int) ((p.y * scaleFactor) + offsetY);
+
+                // Posicionar el círculo intentando ajustar el espiral 
+                dot.moveHorizontal(drawX - 20);
+                dot.moveVertical(drawY - 15);
 
                 visualDots.add(dot);
                 nextDotAt += dotSpacing;

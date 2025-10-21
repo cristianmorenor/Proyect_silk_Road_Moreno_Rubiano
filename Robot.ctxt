@@ -2,6 +2,7 @@
 comment0.target=Robot
 comment1.params=position
 comment1.target=Robot(int)
+<<<<<<< HEAD
 comment1.text=\r\n\ Crea\ un\ nuevo\ robot\ en\ una\ ubicaci\u00F3n\ espec\u00EDfica.\r\n\ \r\n\ @param\ position\ ubicaci\u00F3n\ inicial\ del\ robot.\r\n
 comment10.params=
 comment10.target=void\ goInitialPosition()
@@ -11,27 +12,8 @@ comment11.target=void\ updateVisualPosition(int,\ int)
 comment11.text=\r\n\ Actualiza\ visualmente\ la\ posici\u00F3n\ del\ robot\ en\ el\ canvas.\r\n\ \r\n\ @param\ x\ coordenada\ X\ destino\r\n\ @param\ y\ coordenada\ Y\ destino\r\n
 comment12.params=newColor
 comment12.target=void\ changeColor(java.lang.String)
-comment2.params=
-comment2.target=void\ makeVisible()
-comment2.text=\r\n\ Hace\ visible\ el\ robot.\r\n
-comment3.params=
-comment3.target=void\ makeInvisible()
-comment3.text=\r\n\ Hace\ invisible\ el\ robot.\r\n
-comment4.params=
-comment4.target=int\ getPosition()
-comment4.text=\r\n\ Devuelve\ la\ posici\u00F3n\ actual\ del\ robot.\r\n
-comment5.params=
-comment5.target=int\ getProfit()
-comment5.text=\r\n\ Devuelve\ las\ ganancias\ actuales\ del\ robot.\r\n
-comment6.params=newPosition
-comment6.target=void\ moveTo(int)
-comment6.text=\r\n\ Mueve\ el\ robot\ a\ una\ nueva\ ubicaci\u00F3n.\r\n\ \r\n\ @param\ newPosition\ nueva\ posici\u00F3n\ del\ robot\r\n
-comment7.params=tenges
-comment7.target=void\ pickTenges(int)
-comment7.text=\r\n\ Recolecta\ una\ cantidad\ de\ tenges\ y\ la\ suma\ a\ las\ ganancias\ del\ robot.\r\n
-comment8.params=
-comment8.target=java.util.List\ getProfitHistory()
-comment9.params=moveIndex
-comment9.target=int\ getProfitAtMove(int)
+
+<<<<<<< HEAD
 comment9.text=\r\n\ Retorna\ la\ ganancia\ obtenida\ en\ un\ movimiento\ espec\u00EDfico.\r\n\ \r\n\ @param\ moveIndex\ \u00EDndice\ del\ movimiento\ (0\ \=\ inicial)\r\n\ @return\ ganancia\ en\ ese\ movimiento,\ o\ -1\ si\ el\ \u00EDndice\ es\ inv\u00E1lido\r\n
 numComments=13
+
