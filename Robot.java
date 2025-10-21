@@ -8,7 +8,7 @@
  * También cuenta con una representación visual (círculo) que se dibuja en el
  * canvas.
  * 
- * @author
+ * @author Moreno-Rubiano
  * @version 1.0
  */
 
