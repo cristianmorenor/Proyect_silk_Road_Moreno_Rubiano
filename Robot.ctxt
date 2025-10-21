@@ -2,18 +2,39 @@
 comment0.target=Robot
 comment1.params=position
 comment1.target=Robot(int)
-<<<<<<< HEAD
-comment1.text=\r\n\ Crea\ un\ nuevo\ robot\ en\ una\ ubicaci\u00F3n\ espec\u00EDfica.\r\n\ \r\n\ @param\ position\ ubicaci\u00F3n\ inicial\ del\ robot.\r\n
+comment1.text=\n\ Crea\ un\ nuevo\ robot\ en\ una\ ubicaci\u00F3n\ espec\u00EDfica.\n\ \n\ @param\ position\ ubicaci\u00F3n\ inicial\ del\ robot.\n
 comment10.params=
 comment10.target=void\ goInitialPosition()
-comment10.text=\r\n\ Regresa\ el\ robot\ a\ su\ posici\u00F3n\ inicial.\r\n
+comment10.text=\n\ Regresa\ el\ robot\ a\ su\ posici\u00F3n\ inicial.\n
 comment11.params=x\ y
 comment11.target=void\ updateVisualPosition(int,\ int)
-comment11.text=\r\n\ Actualiza\ visualmente\ la\ posici\u00F3n\ del\ robot\ en\ el\ canvas.\r\n\ \r\n\ @param\ x\ coordenada\ X\ destino\r\n\ @param\ y\ coordenada\ Y\ destino\r\n
+comment11.text=\n\ Actualiza\ visualmente\ la\ posici\u00F3n\ del\ robot\ en\ el\ canvas.\n\ \n\ @param\ x\ coordenada\ X\ destino\n\ @param\ y\ coordenada\ Y\ destino\n
 comment12.params=newColor
 comment12.target=void\ changeColor(java.lang.String)
-
-<<<<<<< HEAD
-comment9.text=\r\n\ Retorna\ la\ ganancia\ obtenida\ en\ un\ movimiento\ espec\u00EDfico.\r\n\ \r\n\ @param\ moveIndex\ \u00EDndice\ del\ movimiento\ (0\ \=\ inicial)\r\n\ @return\ ganancia\ en\ ese\ movimiento,\ o\ -1\ si\ el\ \u00EDndice\ es\ inv\u00E1lido\r\n
-numComments=13
-
+comment13.params=
+comment13.target=void\ blink()
+comment13.text=\n\ Requisito\ usabilidad\ del\ ciclo\ 2\n\ Hace\ que\ el\ robot\ parpadee\ varias\ veces\ para\ destacarlo\ visualmente\ \n
+comment2.params=
+comment2.target=void\ makeVisible()
+comment2.text=\n\ Hace\ visible\ el\ robot.\n
+comment3.params=
+comment3.target=void\ makeInvisible()
+comment3.text=\n\ Hace\ invisible\ el\ robot.\n
+comment4.params=
+comment4.target=int\ getPosition()
+comment4.text=\n\ Devuelve\ la\ posici\u00F3n\ actual\ del\ robot.\n
+comment5.params=
+comment5.target=int\ getProfit()
+comment5.text=\n\ Devuelve\ las\ ganancias\ actuales\ del\ robot.\n
+comment6.params=newPosition
+comment6.target=void\ moveTo(int)
+comment6.text=\n\ Mueve\ el\ robot\ a\ una\ nueva\ ubicaci\u00F3n.\n\ \n\ @param\ newPosition\ nueva\ posici\u00F3n\ del\ robot\n
+comment7.params=tenges
+comment7.target=void\ pickTenges(int)
+comment7.text=\n\ Recolecta\ una\ cantidad\ de\ tenges\ y\ la\ suma\ a\ las\ ganancias\ del\ robot.\n
+comment8.params=
+comment8.target=java.util.List\ getProfitHistory()
+comment9.params=moveIndex
+comment9.target=int\ getProfitAtMove(int)
+comment9.text=\n\ Retorna\ la\ ganancia\ obtenida\ en\ un\ movimiento\ espec\u00EDfico.\n\ \n\ @param\ moveIndex\ \u00EDndice\ del\ movimiento\ (0\ \=\ inicial)\n\ @return\ ganancia\ en\ ese\ movimiento,\ o\ -1\ si\ el\ \u00EDndice\ es\ inv\u00E1lido\n
+numComments=14
